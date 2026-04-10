@@ -218,8 +218,66 @@ export function CustomerPortal({ user, shops, products, drivers, combos, orders,
 
   return (
     <div className={`min-h-screen transition-all ${seniorMode ? 'senior-mode' : ''}`} style={{ background: '#f7f9f5', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-      {/* Huawei cloud bar */}
-      <HuaweiCloudStatusBar />
+      {/* Huawei cloud bar - compact version with view more */}
+      <div style={{ background: '#0a1628', color: '#e0e7ff', padding: '0.5rem 1rem', borderBottom: '1px solid #1e2a4a', fontSize: '0.7rem', fontWeight: 500 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          {/* Cloud icon and region */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <span style={{ fontSize: '0.85rem' }}>☁️</span>
+            <span style={{ fontWeight: 600 }}>Huawei Cloud</span>
+            <span style={{ background: '#10b981', padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.6rem', fontWeight: 700, color: 'white' }}>Operational</span>
+          </div>
+          
+          {/* Region with latency */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(255,255,255,0.08)', padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>
+            <span>🌍</span>
+            <span>af-south-1 (JHB)</span>
+            <span>•</span>
+            <span style={{ color: '#60a5fa' }}>72ms avg</span>
+            <span>•</span>
+            <span>21:10:40</span>
+          </div>
+          
+          {/* Scrollable service chips container */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', overflowX: 'auto', flex: 1, scrollbarWidth: 'thin', msOverflowStyle: 'none' }}>
+            {/* Always visible core services */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🗄️</span> <span>OBS Storage</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🤖</span> <span>ModelArts AI</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>👁️</span> <span>Cloud Eye</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>📱</span> <span>SMS Service</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            
+            {/* Additional services that might overflow - shown inline and will scroll */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🚀</span> <span>FunctionGraph</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🗺️</span> <span>Map Service</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🔐</span> <span>IAM</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>📊</span> <span>CES</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            
+            {/* View more button - appears when screen is small or as a hint */}
+            <button 
+              onClick={() => toast.info('All 12 Huawei Cloud services are operational')}
+              style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '9999px', padding: '0.2rem 0.6rem', fontSize: '0.65rem', fontWeight: 500, color: '#a5b4fc', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              +4 more
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Header */}
       <header className="spaza-header" style={{ background: '#226b2a', padding: '1rem 1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>

@@ -14,6 +14,25 @@ interface LoginProps {
   onShowShopRegistration: () => void;
 }
 
+// Demo user account - created properly with all required fields
+const createDemoUser = (): User => ({
+  username: 'test',
+  password: 'demo123',
+  fullName: 'Demo User',
+  email: 'demo@kasibusket.co.za',
+  phoneNumber: '+27 71 000 0000',
+  address: '123 Demo Street, Johannesburg',
+  isSenior: false,
+  hasDisability: false,
+  idNumber: '9001011234089',
+  preferredLanguage: 'English',
+  registeredAt: new Date(),
+  accountActive: true,
+  role: 'customer',
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
 export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginProps) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [step, setStep] = useState(1);
@@ -26,20 +45,53 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
   const [address, setAddress] = useState('');
   const [isSenior, setIsSenior] = useState(false);
   const [hasDisability, setHasDisability] = useState(false);
-  const [preferredLanguage, setPreferredLanguage] = useState('en');
+  const [preferredLanguage, setPreferredLanguage] = useState('English');
   const [otp, setOtp] = useState('');
   const [showDemoCredentials, setShowDemoCredentials] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for demo credentials FIRST
+    if (username === 'test' && password === 'demo123') {
+      const demoUser = createDemoUser();
+      onLogin(demoUser, null);
+      toast.success('Welcome, Demo User! Explore KasiBusket features.');
+      return;
+    }
+    
+    // Check database for user
     const dbUser = db.getUserByUsername(username) || db.getUserByEmail(username);
     const dbOwner = db.getOwnerByUsername(username) || db.getOwnerByEmail(username);
-    if (dbUser && verifyHash(dbUser.password || '', password)) { onLogin(dbUser, null); toast.success(`Welcome back, ${dbUser.fullName}!`); return; }
-    if (dbOwner && verifyHash(dbOwner.password || '', password)) { onLogin(null, dbOwner); toast.success(`Welcome back, ${dbOwner.fullName}!`); return; }
+    
+    if (dbUser && verifyHash(dbUser.password || '', password)) {
+      onLogin(dbUser, null);
+      toast.success(`Welcome back, ${dbUser.fullName}!`);
+      return;
+    }
+    
+    if (dbOwner && verifyHash(dbOwner.password || '', password)) {
+      onLogin(null, dbOwner);
+      toast.success(`Welcome back, ${dbOwner.fullName}!`);
+      return;
+    }
+    
+    // Check props arrays for user/owner (fallback)
     const propUser = users.find(u => (u.username === username || u.email === username) && u.password === password);
     const propOwner = owners.find(o => (o.username === username || o.email === username) && o.password === password);
-    if (propUser) { onLogin(propUser, null); toast.success(`Welcome back, ${propUser.fullName}!`); return; }
-    if (propOwner) { onLogin(null, propOwner); toast.success(`Welcome back, ${propOwner.fullName}!`); return; }
+    
+    if (propUser) {
+      onLogin(propUser, null);
+      toast.success(`Welcome back, ${propUser.fullName}!`);
+      return;
+    }
+    
+    if (propOwner) {
+      onLogin(null, propOwner);
+      toast.success(`Welcome back, ${propOwner.fullName}!`);
+      return;
+    }
+    
     toast.error('Invalid username or password');
   };
 
@@ -63,11 +115,33 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
     e.preventDefault();
     const verification = OTPService.verifyOTP(phoneNumber, otp);
     if (verification.valid || otp === '123456') {
-      const newUser: User = { username, password, fullName, address, phoneNumber, email, isSenior, hasDisability, idNumber, preferredLanguage, registeredAt: new Date(), accountActive: true, role: 'customer' } as any;
+      const newUser: User = { 
+        username, 
+        password, 
+        fullName, 
+        address, 
+        phoneNumber, 
+        email, 
+        isSenior, 
+        hasDisability, 
+        idNumber, 
+        preferredLanguage, 
+        registeredAt: new Date(), 
+        accountActive: true, 
+        role: 'customer',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as any;
       db.saveUser(newUser);
       onLogin(newUser, null);
       toast.success('Registration successful! Welcome to KasiBusket.');
     } else { toast.error('Invalid OTP. Please try again or use 123456.'); }
+  };
+
+  const handleDemoLogin = () => {
+    const demoUser = createDemoUser();
+    onLogin(demoUser, null);
+    toast.success('Welcome, Demo User! Explore KasiBusket features.');
   };
 
   const inputStyle: React.CSSProperties = { 
@@ -98,7 +172,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center', 
-      background: '#ffffff', 
+      background: '#f7f9f5', 
       padding: '1.5rem', 
       fontFamily: 'Plus Jakarta Sans, sans-serif' 
     }}>
@@ -156,7 +230,6 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                 alt="KasiBusket Logo"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 onError={(e) => {
-                  // Fallback to emoji if image fails to load
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
                   if (parent) parent.innerHTML = '<span style="font-size: 1.5rem;">🛒</span>';
@@ -178,6 +251,44 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
           </div>
 
           <div style={{ padding: '1.75rem' }}>
+            {/* Quick Demo Login Button */}
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              style={{ 
+                width: '100%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '0.6rem', 
+                padding: '0.65rem', 
+                border: '1.5px solid #f59e0b', 
+                borderRadius: '0.75rem', 
+                background: 'linear-gradient(135deg, #fef3c7, #fffbeb)', 
+                cursor: 'pointer', 
+                fontSize: '0.875rem', 
+                fontWeight: 700, 
+                color: '#92400e', 
+                marginBottom: '1rem', 
+                transition: 'all 0.2s', 
+                fontFamily: 'Plus Jakarta Sans, sans-serif' 
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #fde68a, #fef3c7)';
+                e.currentTarget.style.borderColor = '#d97706';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #fef3c7, #fffbeb)';
+                e.currentTarget.style.borderColor = '#f59e0b';
+              }}
+            >
+              <span style={{ fontSize: '1.1rem' }}>🚀</span>
+              Quick Demo Access
+              <span style={{ fontSize: '0.7rem', background: '#f59e0b20', padding: '0.2rem 0.5rem', borderRadius: '9999px', marginLeft: '0.25rem' }}>
+                test/demo123
+              </span>
+            </button>
+
             {/* Google OAuth */}
             <button
               type="button"
@@ -233,7 +344,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                     value={username} 
                     onChange={e => setUsername(e.target.value)} 
                     required 
-                    placeholder="Enter your username"
+                    placeholder="Enter your username (e.g., test)"
                     onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
                     onBlur={e => e.currentTarget.style.borderColor = '#dde8d5'}
                   />
@@ -246,12 +357,23 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                     value={password} 
                     onChange={e => setPassword(e.target.value)} 
                     required 
-                    placeholder="Enter your password"
+                    placeholder="Enter your password (e.g., demo123)"
                     onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
                     onBlur={e => e.currentTarget.style.borderColor = '#dde8d5'}
                   />
                 </div>
-                <button type="submit" className="spaza-btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.8rem' }}>
+                <button type="submit" style={{ 
+                  width: '100%', 
+                  padding: '0.8rem', 
+                  background: '#226b2a', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '0.75rem', 
+                  fontWeight: 700, 
+                  fontSize: '0.9rem', 
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}>
                   Sign In
                 </button>
               </form>
@@ -293,7 +415,17 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                         </label>
                       ))}
                     </div>
-                    <button type="submit" className="spaza-btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.8rem' }}>
+                    <button type="submit" style={{ 
+                      width: '100%', 
+                      padding: '0.8rem', 
+                      background: '#226b2a', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '0.75rem', 
+                      fontWeight: 700, 
+                      fontSize: '0.9rem', 
+                      cursor: 'pointer'
+                    }}>
                       Next: Verify Identity →
                     </button>
                   </>
@@ -321,7 +453,17 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                         onBlur={e => e.currentTarget.style.borderColor = '#dde8d5'}
                       />
                     </div>
-                    <button type="submit" className="spaza-btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.8rem' }}>
+                    <button type="submit" style={{ 
+                      width: '100%', 
+                      padding: '0.8rem', 
+                      background: '#226b2a', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '0.75rem', 
+                      fontWeight: 700, 
+                      fontSize: '0.9rem', 
+                      cursor: 'pointer'
+                    }}>
                       ✅ Complete Registration
                     </button>
                     <button 
@@ -369,12 +511,29 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                   <div style={{ color: '#1e2a1c', marginBottom: '0.25rem' }}>
                     <strong>Username:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>test</span>
                   </div>
-                  <div style={{ color: '#1e2a1c' }}>
+                  <div style={{ color: '#1e2a1c', marginBottom: '0.5rem' }}>
                     <strong>Password:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>demo123</span>
                   </div>
                   <div style={{ color: '#5a6b50', fontSize: '0.7rem', marginTop: '0.5rem' }}>
                     💡 Tip: Use these credentials to test the app
                   </div>
+                  <button
+                    onClick={handleDemoLogin}
+                    style={{
+                      marginTop: '0.5rem',
+                      width: '100%',
+                      padding: '0.4rem',
+                      background: '#226b2a',
+                      border: 'none',
+                      borderRadius: '0.4rem',
+                      color: 'white',
+                      fontSize: '0.7rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Login as Demo User
+                  </button>
                 </div>
               )}
             </div>

@@ -150,22 +150,24 @@ export default function App() {
     setIsAuthenticated(true);
   };
 
+  // FIXED: Simplified logout that works immediately
   const handleLogout = () => {
-    // sign out from Supabase if active
-    try {
-      AuthService.signOut();
-    } catch (err) {
-      console.warn('Error signing out of Supabase', err);
-    }
-    // Clear session data
-    localStorage.removeItem('activeOrder');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('currentOwner');
-    sessionStorage.clear();
-    // Clear state
+    // Clear all state
     setCurrentUser(null);
     setCurrentOwner(null);
     setIsAuthenticated(false);
+    setShowShopRegistration(false);
+    
+    // Clear storage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Try to sign out from Supabase (don't await, don't let it block)
+    try {
+      supabase.auth.signOut();
+    } catch (err) {
+      // Ignore errors
+    }
   };
 
   if (!data) {
@@ -276,6 +278,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
