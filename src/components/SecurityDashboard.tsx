@@ -119,237 +119,342 @@ export function SecurityDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'secure':
-        return 'text-green-600 bg-green-50 border-green-200';
+        return { bg: '#f0fdf4', text: '#226b2a', border: '#bbf7d0' };
       case 'warning':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+        return { bg: '#fef3c7', text: '#f59e0b', border: '#fde68a' };
       case 'critical':
-        return 'text-red-600 bg-red-50 border-red-200';
+        return { bg: '#fee2e2', text: '#dc2626', border: '#fecaca' };
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return { bg: '#f3f4f6', text: '#5a6b50', border: '#e5e7eb' };
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'low':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe' };
       case 'medium':
-        return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+        return { bg: '#fef3c7', text: '#f59e0b', border: '#fde68a' };
       case 'high':
-        return 'bg-red-50 text-red-700 border-red-200';
+        return { bg: '#fee2e2', text: '#dc2626', border: '#fecaca' };
       default:
-        return 'bg-gray-50 text-gray-700 border-gray-200';
+        return { bg: '#f3f4f6', text: '#5a6b50', border: '#e5e7eb' };
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Security Score Overview */}
-      <Card className="border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shield className="h-6 w-6 text-indigo-600" />
-              <CardTitle>Security & Compliance</CardTitle>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Header Card */}
+      <div style={{ 
+        padding: '1.5rem', 
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '2rem' }}>🛡️</span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#0d1f0e' }}>
+                Security & Compliance
+              </h2>
             </div>
-            <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-300">
-              <ShieldCheck className="h-3 w-3 mr-1" />
-              Powered by Huawei Cloud
-            </Badge>
+            <p style={{ fontSize: '0.85rem', color: '#5a6b50', margin: 0 }}>
+              Real-time security monitoring and compliance tracking
+            </p>
           </div>
-          <CardDescription>
-            Real-time security monitoring and compliance tracking
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Overall Security Score */}
-            <div className="p-6 bg-white rounded-lg border-2 border-indigo-200">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900">Overall Security Score</h3>
-                <Badge className={securityScore >= 90 ? 'bg-green-600' : 'bg-yellow-600'}>
-                  {securityScore >= 90 ? 'Excellent' : 'Good'}
-                </Badge>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <Progress value={securityScore} className="h-4 mb-2" />
-                  <p className="text-3xl font-bold text-indigo-700">{securityScore}%</p>
-                </div>
-                <TrendingUp className="h-12 w-12 text-green-600" />
-              </div>
-              <p className="text-xs text-gray-600 mt-3">
-                Your platform security exceeds industry standards
-              </p>
+          <span style={{ 
+            fontSize: '0.7rem', 
+            background: '#f0fdf4', 
+            color: '#226b2a', 
+            padding: '0.25rem 0.75rem', 
+            borderRadius: '9999px',
+            border: '1px solid #bbf7d0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
+          }}>
+            <ShieldCheck size={12} /> Powered by Huawei Cloud
+          </span>
+        </div>
+      </div>
+
+      {/* Security Score and Compliance Row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+        {/* Overall Security Score */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1.25rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0d1f0e' }}>Overall Security Score</h3>
+            <span style={{
+              padding: '0.2rem 0.5rem',
+              borderRadius: '9999px',
+              fontSize: '0.65rem',
+              fontWeight: 600,
+              background: securityScore >= 90 ? '#f0fdf4' : '#fef3c7',
+              color: securityScore >= 90 ? '#226b2a' : '#f59e0b'
+            }}>
+              {securityScore >= 90 ? 'Excellent' : 'Good'}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ flex: 1 }}>
+              <Progress value={securityScore} className="h-2 mb-2" />
+              <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#226b2a' }}>{securityScore}%</p>
             </div>
+            <TrendingUp size={32} style={{ color: '#226b2a' }} />
+          </div>
+          <p style={{ fontSize: '0.65rem', color: '#5a6b50', marginTop: '0.75rem' }}>
+            Your platform security exceeds industry standards
+          </p>
+        </div>
 
-            {/* Compliance Status */}
-            <div className="p-6 bg-white rounded-lg border-2 border-green-200">
-              <h3 className="font-semibold text-gray-900 mb-4">Compliance Status</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCheck className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">POPIA Compliant</span>
-                  </div>
-                  {complianceStatus.popia ? (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <AlertTriangle className="h-5 w-5 text-yellow-600" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCheck className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">PCI-DSS Ready</span>
-                  </div>
-                  {complianceStatus.pciDss ? (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <AlertTriangle className="h-5 w-5 text-yellow-600" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCheck className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">GDPR Ready</span>
-                  </div>
-                  {complianceStatus.gdpr ? (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <AlertTriangle className="h-5 w-5 text-yellow-600" />
-                  )}
-                </div>
+        {/* Compliance Status */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1.25rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <h3 style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0d1f0e', marginBottom: '1rem' }}>Compliance Status</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileCheck size={14} style={{ color: '#226b2a' }} />
+                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>POPIA Compliant</span>
               </div>
+              {complianceStatus.popia ? (
+                <CheckCircle size={16} style={{ color: '#226b2a' }} />
+              ) : (
+                <AlertTriangle size={16} style={{ color: '#f59e0b' }} />
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileCheck size={14} style={{ color: '#226b2a' }} />
+                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>PCI-DSS Ready</span>
+              </div>
+              {complianceStatus.pciDss ? (
+                <CheckCircle size={16} style={{ color: '#226b2a' }} />
+              ) : (
+                <AlertTriangle size={16} style={{ color: '#f59e0b' }} />
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileCheck size={14} style={{ color: '#226b2a' }} />
+                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>GDPR Ready</span>
+              </div>
+              {complianceStatus.gdpr ? (
+                <CheckCircle size={16} style={{ color: '#226b2a' }} />
+              ) : (
+                <AlertTriangle size={16} style={{ color: '#f59e0b' }} />
+              )}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Security Metrics */}
-          <div className="space-y-3 mb-6">
-            <h3 className="font-semibold text-gray-900">Security Metrics</h3>
-            {metrics.map((metric, index) => (
-              <div
-                key={index}
-                className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    {metric.status === 'secure' ? (
-                      <Lock className="h-4 w-4 text-green-600" />
-                    ) : metric.status === 'warning' ? (
-                      <Eye className="h-4 w-4 text-yellow-600" />
-                    ) : (
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
-                    )}
-                    <span className="font-medium">{metric.name}</span>
-                  </div>
-                  <Badge variant="outline" className={getStatusColor(metric.status)}>
-                    {metric.score}%
-                  </Badge>
-                </div>
-                <Progress value={metric.score} className="h-2 mb-2" />
-                <p className="text-xs text-gray-600">{metric.details}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Threat Detection */}
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Recent Security Events
-            </h3>
-            {threats.length === 0 ? (
-              <div className="p-8 text-center bg-green-50 rounded-lg border border-green-200">
-                <ShieldCheck className="h-12 w-12 text-green-600 mx-auto mb-2" />
-                <p className="font-semibold text-green-900">No threats detected</p>
-                <p className="text-sm text-green-700 mt-1">Your platform is secure</p>
-              </div>
-            ) : (
-              threats.map((threat) => (
+      {/* Security Metrics Card */}
+      <div style={{
+        background: 'white',
+        borderRadius: '1rem',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        border: '1px solid #e5e7eb'
+      }}>
+        <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Shield size={16} /> Security Metrics
+          </h3>
+        </div>
+        <div style={{ padding: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {metrics.map((metric, index) => {
+              const statusColor = getStatusColor(metric.status);
+              return (
                 <div
-                  key={threat.id}
-                  className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow"
+                  key={index}
+                  style={{
+                    padding: '1rem',
+                    background: '#f9fafb',
+                    borderRadius: '0.75rem',
+                    border: '1px solid #e5e7eb'
+                  }}
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">{threat.type}</span>
-                        <Badge variant="outline" className={getSeverityColor(threat.severity)}>
-                          {threat.severity}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className={
-                            threat.status === 'resolved'
-                              ? 'bg-green-50 text-green-700'
-                              : 'bg-blue-50 text-blue-700'
-                          }
-                        >
-                          {threat.status}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-1">{threat.description}</p>
-                      <p className="text-xs text-gray-500">
-                        Action taken: {threat.action}
-                      </p>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      {metric.status === 'secure' ? (
+                        <Lock size={14} style={{ color: '#226b2a' }} />
+                      ) : metric.status === 'warning' ? (
+                        <Eye size={14} style={{ color: '#f59e0b' }} />
+                      ) : (
+                        <AlertTriangle size={14} style={{ color: '#dc2626' }} />
+                      )}
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0d1f0e' }}>{metric.name}</span>
                     </div>
-                    <span className="text-xs text-gray-400">
-                      {threat.timestamp.toLocaleTimeString()}
+                    <span style={{
+                      padding: '0.15rem 0.5rem',
+                      borderRadius: '9999px',
+                      fontSize: '0.6rem',
+                      fontWeight: 600,
+                      background: statusColor.bg,
+                      color: statusColor.text,
+                      border: `1px solid ${statusColor.border}`
+                    }}>
+                      {metric.score}%
                     </span>
                   </div>
+                  <Progress value={metric.score} className="h-1.5 mb-2" />
+                  <p style={{ fontSize: '0.65rem', color: '#5a6b50' }}>{metric.details}</p>
                 </div>
-              ))
-            )}
+              );
+            })}
           </div>
+        </div>
+      </div>
 
-          {/* Security Features */}
-          <div className="mt-6 p-4 bg-indigo-100 rounded-lg border border-indigo-200">
-            <h4 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
-              <Key className="h-4 w-4" />
-              Active Security Features
-            </h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-indigo-800">
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>TLS 1.3 Encryption</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>Rate Limiting</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>MFA Enabled</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>Blockchain Audit</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>API Gateway</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>Real-time Monitoring</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>Fraud Detection</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                <span>Data Backups</span>
-              </div>
+      {/* Recent Security Events Card */}
+      <div style={{
+        background: 'white',
+        borderRadius: '1rem',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        border: '1px solid #e5e7eb'
+      }}>
+        <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Activity size={16} /> Recent Security Events
+          </h3>
+        </div>
+        <div style={{ padding: '1rem' }}>
+          {threats.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🛡️</div>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#226b2a', marginBottom: '0.25rem' }}>No threats detected</p>
+              <p style={{ fontSize: '0.7rem', color: '#5a6b50' }}>Your platform is secure</p>
             </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {threats.map((threat) => {
+                const severityColor = getSeverityColor(threat.severity);
+                return (
+                  <div
+                    key={threat.id}
+                    style={{
+                      padding: '1rem',
+                      background: '#f9fafb',
+                      borderRadius: '0.75rem',
+                      border: '1px solid #e5e7eb'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0d1f0e' }}>{threat.type}</span>
+                          <span style={{
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: '9999px',
+                            fontSize: '0.6rem',
+                            fontWeight: 600,
+                            background: severityColor.bg,
+                            color: severityColor.text,
+                            border: `1px solid ${severityColor.border}`
+                          }}>
+                            {threat.severity}
+                          </span>
+                          <span style={{
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: '9999px',
+                            fontSize: '0.6rem',
+                            fontWeight: 600,
+                            background: threat.status === 'resolved' ? '#f0fdf4' : '#eff6ff',
+                            color: threat.status === 'resolved' ? '#226b2a' : '#2563eb',
+                            border: `1px solid ${threat.status === 'resolved' ? '#bbf7d0' : '#bfdbfe'}`
+                          }}>
+                            {threat.status}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: '0.7rem', color: '#5a6b50', marginBottom: '0.25rem' }}>{threat.description}</p>
+                        <p style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Action taken: {threat.action}</p>
+                      </div>
+                      <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>
+                        {threat.timestamp.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Active Security Features Card */}
+      <div style={{
+        padding: '1rem',
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)',
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: '#226b2a', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Key size={14} /> Active Security Features
+        </h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> TLS 1.3 Encryption
           </div>
-        </CardContent>
-      </Card>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> Rate Limiting
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> MFA Enabled
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> Blockchain Audit
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> API Gateway
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> Real-time Monitoring
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> Fraud Detection
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: '#226b2a' }}>
+            <CheckCircle size={12} /> Data Backups
+          </div>
+        </div>
+      </div>
+
+      {/* AI Trust Section */}
+      <div style={{
+        padding: '1rem',
+        background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
+        border: '2px solid #d8b4fe',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '1.5rem' }}>🔒</span>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, color: '#6b21a5' }}>
+            Huawei Cloud Security Features
+          </h3>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.7rem', color: '#5a6b50' }}>
+          <span>✓ Web Application Firewall (WAF)</span>
+          <span>✓ DDoS Protection</span>
+          <span>✓ Intrusion Detection System (IDS)</span>
+          <span>✓ Security Center Integration</span>
+          <span>✓ Compliance Automation</span>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-
-

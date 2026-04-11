@@ -1,11 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Package, Plus, Upload, Edit, Trash2, X, ImageIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Package, Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Product, Combo } from '../../types';
 import { db } from '../../services/DatabaseService';
 
@@ -32,7 +27,6 @@ export function ProductManagement({
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [uploading, setUploading] = useState(false);
 
   // Form state
   const [name, setName] = useState('');
@@ -43,16 +37,7 @@ export function ProductManagement({
   const [description, setDescription] = useState('');
   const [availableOnCredit, setAvailableOnCredit] = useState(true);
   const [seniorFavorite, setSeniorFavorite] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
-
-  // combo form state
-  const [showComboForm, setShowComboForm] = useState(false);
-  const [comboName, setComboName] = useState('');
-  const [comboProductIds, setComboProductIds] = useState<string[]>([]);
-  const [comboPrice, setComboPrice] = useState('');
 
   const categories = [
     'Groceries', 'Beverages', 'Snacks', 'Household', 'Personal Care',
@@ -66,7 +51,6 @@ export function ProductManagement({
   const loadProducts = async () => {
     setLoading(true);
     try {
-      // Use database service which handles persistence
       const data = db.getProductsByOwner(ownerUsername);
       setProducts(data);
     } catch (error) {
@@ -74,20 +58,6 @@ export function ProductManagement({
       toast.error('Failed to load products');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image must be less than 5MB');
-        return;
-      }
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
     }
   };
 
@@ -104,7 +74,7 @@ export function ProductManagement({
       category,
       stock: parseInt(stock),
       minStockLevel: parseInt(minStockLevel),
-      shopLocation: shopName, // simplified
+      shopLocation: shopName,
       seniorFavorite,
       shopOwner: ownerUsername,
       availableOnCredit,
@@ -113,7 +83,7 @@ export function ProductManagement({
     };
 
     db.saveProduct(productData);
-    toast.success('Product saved locally');
+    toast.success('Product saved successfully');
     resetForm();
     setShowAddForm(false);
     loadProducts();
@@ -134,7 +104,7 @@ export function ProductManagement({
     setCategory(product.category);
     setStock(product.stock.toString());
     setMinStockLevel(product.minStockLevel.toString());
-    setDescription(product.description.en || '');
+    setDescription(product.description?.en || '');
     setAvailableOnCredit(product.availableOnCredit);
     setSeniorFavorite(product.seniorFavorite);
     setExpiryDate(product.expiryDate || '');
@@ -150,107 +120,530 @@ export function ProductManagement({
     setDescription('');
     setAvailableOnCredit(true);
     setSeniorFavorite(false);
-    setImageFile(null);
-    setImagePreview('');
     setExpiryDate('');
     setEditingProduct(null);
   };
 
   if (loading) {
-    return <div className="p-12 text-center">Loading products...</div>;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ 
+          padding: '2rem', 
+          background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+          border: '1px solid #bbf7d0',
+          borderRadius: '1rem',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem', animation: 'pulse 1s ease-in-out infinite' }}>📦</div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0d1f0e', marginBottom: '0.5rem' }}>
+            Loading products...
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#5a6b50' }}>Fetching your inventory</p>
+        </div>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">Inventory Management</h2>
-          <p className="text-sm text-gray-500">{shopName} Shop Floor</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Header Card */}
+      <div style={{ 
+        padding: '1.5rem', 
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '2rem' }}>📦</span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#0d1f0e' }}>
+                Inventory Management
+              </h2>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: '#5a6b50', margin: 0 }}>
+              {shopName} Shop Floor • {products.length} products
+            </p>
+          </div>
+          {!showAddForm && (
+            <button
+              onClick={() => setShowAddForm(true)}
+              style={{
+                background: '#226b2a',
+                color: 'white',
+                border: 'none',
+                padding: '0.6rem 1.2rem',
+                borderRadius: '0.75rem',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#1a5420'}
+              onMouseLeave={e => e.currentTarget.style.background = '#226b2a'}
+            >
+              <Plus size={16} /> Add Item
+            </button>
+          )}
         </div>
-        {!showAddForm && (
-          <Button onClick={() => setShowAddForm(true)} className="bg-green-600 hover:bg-green-700">
-            <Plus className="w-4 h-4 mr-2" /> Add Item
-          </Button>
-        )}
       </div>
 
+      {/* Add/Edit Product Form */}
       {showAddForm && (
-        <Card className="border-2 border-green-100">
-          <CardHeader>
-            <CardTitle>{editingProduct ? 'Update Product' : 'New Product'}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddProduct} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Product Name</Label>
-                  <Input value={name} onChange={e => setName(e.target.value)} required />
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0 }}>
+              {editingProduct ? '✏️ Update Product' : '✨ New Product'}
+            </h3>
+          </div>
+          <div style={{ padding: '1.25rem' }}>
+            <form onSubmit={handleAddProduct}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Product Name *
+                  </label>
+                  <input
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label>Price (R)</Label>
-                  <Input type="number" step="0.01" value={price} onChange={e => setPrice(e.target.value)} required />
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Price (R) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={price}
+                    onChange={e => setPrice(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Stock</Label>
-                  <Input type="number" value={stock} onChange={e => setStock(e.target.value)} required />
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Stock *
+                  </label>
+                  <input
+                    type="number"
+                    value={stock}
+                    onChange={e => setStock(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label>Min Level</Label>
-                  <Input type="number" value={minStockLevel} onChange={e => setMinStockLevel(e.target.value)} />
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Min Stock Level
+                  </label>
+                  <input
+                    type="number"
+                    value={minStockLevel}
+                    onChange={e => setMinStockLevel(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label>Category</Label>
-                  <select value={category} onChange={e => setCategory(e.target.value)} className="w-full h-10 border rounded px-2">
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Category
+                  </label>
+                  <select
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      background: 'white',
+                      cursor: 'pointer'
+                    }}
+                  >
                     {categories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Expiry Date (optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={expiryDate}
+                    onChange={e => setExpiryDate(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
+                </div>
               </div>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2">
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    border: '1.5px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                    outline: 'none',
+                    transition: 'all 0.2s',
+                    resize: 'vertical'
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                   <input type="checkbox" checked={availableOnCredit} onChange={e => setAvailableOnCredit(e.target.checked)} />
-                  <span className="text-sm">Allow Credit</span>
+                  <span style={{ fontSize: '0.8rem', color: '#0d1f0e' }}>💳 Allow Credit</span>
                 </label>
-                <label className="flex items-center gap-2">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                   <input type="checkbox" checked={seniorFavorite} onChange={e => setSeniorFavorite(e.target.checked)} />
-                  <span className="text-sm">Senior Mode Fav</span>
+                  <span style={{ fontSize: '0.8rem', color: '#0d1f0e' }}>👴 Senior Mode Favorite</span>
                 </label>
               </div>
-              <div className="flex gap-2">
-                <Button type="submit" className="bg-green-600">Save Product</Button>
-                <Button type="button" variant="outline" onClick={() => { resetForm(); setShowAddForm(false); }}>Cancel</Button>
+
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+                <button
+                  type="submit"
+                  style={{
+                    background: '#226b2a',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.6rem 1.5rem',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#1a5420'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#226b2a'}
+                >
+                  {editingProduct ? 'Update Product' : 'Save Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { resetForm(); setShowAddForm(false); }}
+                  style={{
+                    background: '#f3f4f6',
+                    color: '#5a6b50',
+                    border: 'none',
+                    padding: '0.6rem 1.5rem',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#e5e7eb'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#f3f4f6'}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Products Grid */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Package size={16} /> All Products
+          </h3>
+          <span style={{ fontSize: '0.7rem', color: '#5a6b50' }}>{products.length} items</span>
+        </div>
+
         {products.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-gray-400">No products found.</div>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '3rem',
+            textAlign: 'center',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📦</div>
+            <p style={{ fontSize: '0.85rem', color: '#5a6b50' }}>No products found. Click "Add Item" to get started!</p>
+          </div>
         ) : (
-          products.map(p => (
-            <Card key={p.name} className="overflow-hidden hover:shadow-md transition-shadow">
-              <div className="h-32 bg-gray-50 flex items-center justify-center border-b">
-                <Package className="w-12 h-12 text-gray-200" />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-bold">{p.name}</h3>
-                <p className="text-green-600 font-bold">R{p.price.toFixed(2)}</p>
-                <div className="mt-2 text-xs text-gray-500">Stock: {p.stock} units</div>
-                <div className="flex gap-2 mt-4">
-                  <Button size="sm" variant="ghost" onClick={() => handleEditProduct(p)}><Edit className="w-4 h-4" /></Button>
-                  <Button size="sm" variant="ghost" className="text-red-500" onClick={() => handleDeleteProduct(p.name)}><Trash2 className="w-4 h-4" /></Button>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+            {products.map((product) => {
+              const isLowStock = product.stock <= product.minStockLevel;
+              const isExpiring = product.expiryDate && new Date(product.expiryDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+              
+              return (
+                <div
+                  key={product.name}
+                  style={{
+                    background: 'white',
+                    borderRadius: '1rem',
+                    overflow: 'hidden',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    border: `1px solid ${isLowStock ? '#fef3c7' : '#e5e7eb'}`,
+                    transition: 'transform 0.2s, box-shadow 0.2s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0,0,0,0.1)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                  }}
+                >
+                  {/* Product Image Placeholder */}
+                  <div style={{
+                    height: '120px',
+                    background: isLowStock ? '#fef3c7' : '#f9fafb',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderBottom: `1px solid ${isLowStock ? '#fde68a' : '#e5e7eb'}`
+                  }}>
+                    <Package size={48} style={{ color: isLowStock ? '#f59e0b' : '#9ca3af' }} />
+                  </div>
+                  
+                  {/* Product Info */}
+                  <div style={{ padding: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                      <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0d1f0e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {product.name}
+                      </h4>
+                      {product.seniorFavorite && <span style={{ fontSize: '0.75rem' }}>👴</span>}
+                    </div>
+                    
+                    <p style={{ fontSize: '0.7rem', color: '#5a6b50', marginBottom: '0.25rem' }}>{product.category}</p>
+                    
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: '#226b2a', marginBottom: '0.5rem' }}>
+                      R{product.price.toFixed(2)}
+                    </div>
+                    
+                    {/* Stock Status */}
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', marginBottom: '0.2rem' }}>
+                        <span style={{ color: '#5a6b50' }}>Stock</span>
+                        <span style={{ fontWeight: 600, color: isLowStock ? '#f59e0b' : '#226b2a' }}>
+                          {product.stock} / {product.minStockLevel}
+                        </span>
+                      </div>
+                      <div style={{
+                        width: '100%',
+                        background: '#e5e7eb',
+                        borderRadius: '9999px',
+                        height: '4px',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{
+                          width: `${Math.min(100, (product.stock / product.minStockLevel) * 100)}%`,
+                          height: '100%',
+                          background: isLowStock ? '#f59e0b' : '#226b2a',
+                          borderRadius: '9999px'
+                        }} />
+                      </div>
+                    </div>
+                    
+                    {/* Expiry Warning */}
+                    {isExpiring && (
+                      <div style={{ fontSize: '0.6rem', color: '#f59e0b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <span>⚠️</span> Expires soon
+                      </div>
+                    )}
+                    
+                    {/* Action Buttons */}
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                      <button
+                        onClick={() => handleEditProduct(product)}
+                        style={{
+                          flex: 1,
+                          background: '#f3f4f6',
+                          color: '#5a6b50',
+                          border: 'none',
+                          padding: '0.4rem',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.25rem'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#e5e7eb'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#f3f4f6'}
+                      >
+                        <Edit size={12} /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProduct(product.name)}
+                        style={{
+                          flex: 1,
+                          background: '#fee2e2',
+                          color: '#dc2626',
+                          border: 'none',
+                          padding: '0.4rem',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.25rem'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#fecaca'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#fee2e2'}
+                      >
+                        <Trash2 size={12} /> Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))
+              );
+            })}
+          </div>
         )}
       </div>
+
+      {/* Combo Deals Section */}
+      {combos && combos.length > 0 && (
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>🎁</span> Combo Deals
+            </h3>
+          </div>
+          <div style={{ padding: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+              {combos.map((combo, idx) => {
+                // Get product count safely - if combo has productIds array, use that
+                const productCount = combo.productIds?.length || combo.items?.length || 0;
+                
+                return (
+                  <div key={idx} style={{
+                    padding: '0.75rem',
+                    background: '#fef3c7',
+                    borderRadius: '0.75rem',
+                    border: '1px solid #fde68a'
+                  }}>
+                    <div style={{ fontWeight: 700, color: '#0d1f0e', marginBottom: '0.25rem' }}>{combo.name}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#5a6b50', marginBottom: '0.5rem' }}>
+                      {productCount} {productCount === 1 ? 'item' : 'items'}
+                    </div>
+                    <div style={{ fontWeight: 800, color: '#226b2a' }}>
+                      R{combo.price ? combo.price.toFixed(2) : '0.00'}
+                    </div>
+                    {combo.discountPercentage && (
+                      <div style={{ fontSize: '0.65rem', color: '#f59e0b', marginTop: '0.25rem' }}>
+                        Save {combo.discountPercentage}%
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.05); }
+        }
+      `}</style>
     </div>
   );
 }
-
-
-

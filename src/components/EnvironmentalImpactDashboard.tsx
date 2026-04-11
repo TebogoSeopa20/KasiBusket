@@ -87,182 +87,254 @@ export function EnvironmentalImpactDashboard({
   };
 
   const getSustainabilityLevel = (score: number) => {
-    if (score >= 80) return { label: 'Excellent', color: 'text-green-700 bg-green-50 border-green-300' };
-    if (score >= 60) return { label: 'Good', color: 'text-blue-700 bg-blue-50 border-blue-300' };
-    if (score >= 40) return { label: 'Fair', color: 'text-yellow-700 bg-yellow-50 border-yellow-300' };
-    return { label: 'Improving', color: 'text-orange-700 bg-orange-50 border-orange-300' };
+    if (score >= 80) return { label: 'Excellent', color: '#226b2a', bg: '#f0fdf4', border: '#bbf7d0' };
+    if (score >= 60) return { label: 'Good', color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' };
+    if (score >= 40) return { label: 'Fair', color: '#f59e0b', bg: '#fef3c7', border: '#fde68a' };
+    return { label: 'Improving', color: '#ea580c', bg: '#fff7ed', border: '#fed7aa' };
   };
 
   const level = getSustainabilityLevel(metrics.sustainabilityScore);
 
   return (
-    <Card className="border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Leaf className="h-5 w-5 text-green-600" />
-            <CardTitle>Environmental Impact</CardTitle>
-          </div>
-          <Badge variant="outline" className={level.color}>
-            <Award className="h-3 w-3 mr-1" />
-            {level.label}
-          </Badge>
-        </div>
-        <CardDescription>
-          Track your positive impact on the environment through smart operations
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Sustainability Score */}
-        <div className="p-4 bg-white rounded-lg border-2 border-green-200">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-900">Sustainability Score</h4>
-            <span className="text-3xl font-bold text-green-700">{metrics.sustainabilityScore}/100</span>
-          </div>
-          <Progress value={metrics.sustainabilityScore} className="h-3 mb-2" />
-          <p className="text-xs text-gray-600">
-            Your shop is performing {level.label.toLowerCase()} in environmental sustainability!
-          </p>
-        </div>
-
-        {/* Impact Metrics */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Fuel Saved */}
-          <div className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Fuel className="h-5 w-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">Fuel Saved</p>
-                <p className="text-xl font-bold text-blue-700">{metrics.fuelSaved.toFixed(1)}L</p>
-              </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Header Card */}
+      <div style={{ 
+        padding: '1.5rem', 
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '2rem' }}>🌱</span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#0d1f0e' }}>
+                Environmental Impact
+              </h2>
             </div>
-            <p className="text-xs text-gray-500">
-              Via optimized delivery routes
+            <p style={{ fontSize: '0.85rem', color: '#5a6b50', margin: 0 }}>
+              Track your positive impact on the environment through smart operations
             </p>
           </div>
-
-          {/* CO2 Reduced */}
-          <div className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <TrendingDown className="h-5 w-5 text-green-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">CO₂ Reduced</p>
-                <p className="text-xl font-bold text-green-700">{metrics.co2Reduced.toFixed(1)}kg</p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500">
-              Carbon emissions prevented
-            </p>
-          </div>
-
-          {/* Food Waste Reduced */}
-          <div className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Trash2 className="h-5 w-5 text-orange-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">Food Waste Prevented</p>
-                <p className="text-xl font-bold text-orange-700">{metrics.foodWasteReduced.toFixed(1)}kg</p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500">
-              Through expiry tracking
-            </p>
-          </div>
-
-          {/* Plastic Avoided */}
-          <div className="p-4 bg-white rounded-lg border hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Recycle className="h-5 w-5 text-purple-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">Plastic Avoided</p>
-                <p className="text-xl font-bold text-purple-700">{metrics.plasticAvoided.toFixed(1)}kg</p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500">
-              Reusable bags encouraged
-            </p>
-          </div>
+          <span style={{ 
+            fontSize: '0.7rem', 
+            background: level.bg, 
+            color: level.color, 
+            padding: '0.25rem 0.75rem', 
+            borderRadius: '9999px',
+            border: `1px solid ${level.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
+          }}>
+            <Award size={12} /> {level.label}
+          </span>
         </div>
+      </div>
 
-        {/* Trees Equivalent */}
-        <div className="p-4 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-300">
-          <div className="flex items-center gap-3">
-            <TreePine className="h-10 w-10 text-green-700" />
-            <div className="flex-1">
-              <p className="text-sm text-gray-700 mb-1">
-                Your environmental impact is equivalent to planting
-              </p>
-              <p className="text-3xl font-bold text-green-800">
-                {metrics.treesEquivalent} {metrics.treesEquivalent === 1 ? 'tree' : 'trees'}
-              </p>
-              <p className="text-xs text-green-700 mt-1">
-                Each tree absorbs ~21kg of CO₂ per year
-              </p>
-            </div>
-          </div>
+      {/* Sustainability Score Card */}
+      <div style={{
+        background: 'white',
+        borderRadius: '1rem',
+        padding: '1.25rem',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        border: '1px solid #e5e7eb'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <h4 style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0d1f0e' }}>Sustainability Score</h4>
+          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#226b2a' }}>{metrics.sustainabilityScore}/100</span>
         </div>
+        <Progress value={metrics.sustainabilityScore} className="h-2 mb-2" />
+        <p style={{ fontSize: '0.65rem', color: '#5a6b50' }}>
+          Your shop is performing {level.label.toLowerCase()} in environmental sustainability!
+        </p>
+      </div>
 
-        {/* Monthly Comparison */}
-        <div className="space-y-2">
-          <h4 className="font-semibold text-sm text-gray-700">Monthly Trends</h4>
-          <div className="space-y-3">
-            <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600">Fuel Efficiency</span>
-                <span className="font-semibold text-green-700">+18% vs last month</span>
-              </div>
-              <Progress value={72} className="h-2" />
+      {/* Impact Metrics Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+        {/* Fuel Saved */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <div style={{ padding: '0.4rem', background: '#eff6ff', borderRadius: '0.5rem' }}>
+              <Fuel size={18} style={{ color: '#2563eb' }} />
             </div>
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600">Waste Reduction</span>
-                <span className="font-semibold text-green-700">+25% vs last month</span>
-              </div>
-              <Progress value={85} className="h-2" />
+              <p style={{ fontSize: '0.6rem', color: '#5a6b50' }}>Fuel Saved</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#2563eb' }}>{metrics.fuelSaved.toFixed(1)}L</p>
+            </div>
+          </div>
+          <p style={{ fontSize: '0.6rem', color: '#9ca3af' }}>Via optimized delivery routes</p>
+        </div>
+
+        {/* CO2 Reduced */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <div style={{ padding: '0.4rem', background: '#f0fdf4', borderRadius: '0.5rem' }}>
+              <TrendingDown size={18} style={{ color: '#226b2a' }} />
             </div>
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600">Carbon Footprint</span>
-                <span className="font-semibold text-green-700">-15% vs last month</span>
+              <p style={{ fontSize: '0.6rem', color: '#5a6b50' }}>CO₂ Reduced</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#226b2a' }}>{metrics.co2Reduced.toFixed(1)}kg</p>
+            </div>
+          </div>
+          <p style={{ fontSize: '0.6rem', color: '#9ca3af' }}>Carbon emissions prevented</p>
+        </div>
+
+        {/* Food Waste Reduced */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <div style={{ padding: '0.4rem', background: '#fff7ed', borderRadius: '0.5rem' }}>
+              <Trash2 size={18} style={{ color: '#f59e0b' }} />
+            </div>
+            <div>
+              <p style={{ fontSize: '0.6rem', color: '#5a6b50' }}>Food Waste Prevented</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f59e0b' }}>{metrics.foodWasteReduced.toFixed(1)}kg</p>
+            </div>
+          </div>
+          <p style={{ fontSize: '0.6rem', color: '#9ca3af' }}>Through expiry tracking</p>
+        </div>
+
+        {/* Plastic Avoided */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <div style={{ padding: '0.4rem', background: '#faf5ff', borderRadius: '0.5rem' }}>
+              <Recycle size={18} style={{ color: '#8b5cf6' }} />
+            </div>
+            <div>
+              <p style={{ fontSize: '0.6rem', color: '#5a6b50' }}>Plastic Avoided</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#8b5cf6' }}>{metrics.plasticAvoided.toFixed(1)}kg</p>
+            </div>
+          </div>
+          <p style={{ fontSize: '0.6rem', color: '#9ca3af' }}>Reusable bags encouraged</p>
+        </div>
+      </div>
+
+      {/* Trees Equivalent Card */}
+      <div style={{
+        padding: '1.25rem',
+        background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        flexWrap: 'wrap'
+      }}>
+        <TreePine size={40} style={{ color: '#226b2a' }} />
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: '0.7rem', color: '#166534', marginBottom: '0.25rem' }}>
+            Your environmental impact is equivalent to planting
+          </p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#226b2a' }}>
+            {metrics.treesEquivalent} {metrics.treesEquivalent === 1 ? 'tree' : 'trees'}
+          </p>
+          <p style={{ fontSize: '0.6rem', color: '#5a6b50', marginTop: '0.25rem' }}>
+            Each tree absorbs ~21kg of CO₂ per year
+          </p>
+        </div>
+      </div>
+
+      {/* Monthly Trends Card */}
+      <div style={{
+        background: 'white',
+        borderRadius: '1rem',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        border: '1px solid #e5e7eb'
+      }}>
+        <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>📈</span> Monthly Trends
+          </h3>
+        </div>
+        <div style={{ padding: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '0.25rem' }}>
+                <span style={{ color: '#5a6b50' }}>Fuel Efficiency</span>
+                <span style={{ fontWeight: 600, color: '#226b2a' }}>+18% vs last month</span>
               </div>
-              <Progress value={68} className="h-2" />
+              <Progress value={72} className="h-1.5" />
+            </div>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '0.25rem' }}>
+                <span style={{ color: '#5a6b50' }}>Waste Reduction</span>
+                <span style={{ fontWeight: 600, color: '#226b2a' }}>+25% vs last month</span>
+              </div>
+              <Progress value={85} className="h-1.5" />
+            </div>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '0.25rem' }}>
+                <span style={{ color: '#5a6b50' }}>Carbon Footprint</span>
+                <span style={{ fontWeight: 600, color: '#226b2a' }}>-15% vs last month</span>
+              </div>
+              <Progress value={68} className="h-1.5" />
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Achievements */}
-        <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-          <div className="flex items-center gap-2 mb-2">
-            <Award className="h-5 w-5 text-yellow-600" />
-            <span className="font-semibold text-yellow-900">Eco-Warrior Badge Earned!</span>
-          </div>
-          <p className="text-xs text-yellow-800">
-            🎉 Congratulations! You've prevented over 50kg of CO₂ emissions this month.
-            Keep up the great work for a sustainable future!
-          </p>
+      {/* Eco-Warrior Badge Card */}
+      <div style={{
+        padding: '1rem',
+        background: '#fef3c7',
+        border: '1px solid #fde68a',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <Award size={18} style={{ color: '#f59e0b' }} />
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#92400e' }}>Eco-Warrior Badge Earned!</span>
         </div>
+        <p style={{ fontSize: '0.7rem', color: '#b45309' }}>
+          🎉 Congratulations! You've prevented over 50kg of CO₂ emissions this month.
+          Keep up the great work for a sustainable future!
+        </p>
+      </div>
 
-        {/* Info */}
-        <div className="p-3 bg-green-100 rounded-lg border border-green-200">
-          <p className="text-xs text-green-900">
-            <strong>Powered by Huawei Cloud:</strong> Environmental metrics are calculated using
-            data from route optimization (Huawei Maps AI), inventory tracking (CloudTable),
-            and predictive analytics (ModelArts) to help you run a sustainable business.
-          </p>
+      {/* AI Trust Section */}
+      <div style={{
+        padding: '1rem',
+        background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
+        border: '2px solid #d8b4fe',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '1.5rem' }}>🌍</span>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, color: '#6b21a5' }}>
+            Powered by Huawei Cloud Sustainability AI
+          </h3>
         </div>
-      </CardContent>
-    </Card>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.7rem', color: '#5a6b50' }}>
+          <span>📊 Route optimization (Huawei Maps AI)</span>
+          <span>📈 Inventory tracking (CloudTable)</span>
+          <span>🤖 Predictive analytics (ModelArts)</span>
+          <span>🌱 Carbon footprint calculation</span>
+        </div>
+      </div>
+    </div>
   );
 }
-
-
-
-

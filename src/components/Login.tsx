@@ -14,7 +14,7 @@ interface LoginProps {
   onShowShopRegistration: () => void;
 }
 
-// Demo user account - created properly with all required fields
+// Demo user account
 const createDemoUser = (): User => ({
   username: 'test',
   password: 'demo123',
@@ -28,9 +28,23 @@ const createDemoUser = (): User => ({
   preferredLanguage: 'English',
   registeredAt: new Date(),
   accountActive: true,
-  role: 'customer',
-  createdAt: new Date(),
-  updatedAt: new Date()
+  role: 'customer'
+});
+
+// Demo owner account
+const createDemoOwner = (): Owner => ({
+  username: 'lydia_shop',
+  password: 'owner123',
+  fullName: 'Lydia Mokoena',
+  email: 'lydia@spaza.co.za',
+  phoneNumber: '+27 82 123 4567',
+  shopName: 'Lydia\'s Spaza Shop',
+  address: '45 Vilakazi Street, Soweto, Johannesburg',
+  idNumber: '7501011234089',
+  preferredLanguage: 'English',
+  registeredAt: new Date(),
+  accountActive: true,
+  role: 'owner'
 });
 
 export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginProps) {
@@ -52,7 +66,15 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check for demo credentials FIRST
+    // Check for demo owner credentials FIRST
+    if (username === 'lydia_shop' && password === 'owner123') {
+      const demoOwner = createDemoOwner();
+      onLogin(null, demoOwner);
+      toast.success('Welcome, Lydia! Welcome to your Owner Portal.');
+      return;
+    }
+    
+    // Check for demo user credentials
     if (username === 'test' && password === 'demo123') {
       const demoUser = createDemoUser();
       onLogin(demoUser, null);
@@ -128,10 +150,8 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
         preferredLanguage, 
         registeredAt: new Date(), 
         accountActive: true, 
-        role: 'customer',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      } as any;
+        role: 'customer'
+      };
       db.saveUser(newUser);
       onLogin(newUser, null);
       toast.success('Registration successful! Welcome to KasiBusket.');
@@ -142,6 +162,12 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
     const demoUser = createDemoUser();
     onLogin(demoUser, null);
     toast.success('Welcome, Demo User! Explore KasiBusket features.');
+  };
+
+  const handleOwnerDemoLogin = () => {
+    const demoOwner = createDemoOwner();
+    onLogin(null, demoOwner);
+    toast.success('Welcome, Lydia! Welcome to your Owner Portal.');
   };
 
   const inputStyle: React.CSSProperties = { 
@@ -251,6 +277,44 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
           </div>
 
           <div style={{ padding: '1.75rem' }}>
+            {/* Owner Demo Login Button */}
+            <button
+              type="button"
+              onClick={handleOwnerDemoLogin}
+              style={{ 
+                width: '100%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '0.6rem', 
+                padding: '0.65rem', 
+                border: '1.5px solid #226b2a', 
+                borderRadius: '0.75rem', 
+                background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+                cursor: 'pointer', 
+                fontSize: '0.875rem', 
+                fontWeight: 700, 
+                color: '#226b2a', 
+                marginBottom: '0.75rem', 
+                transition: 'all 0.2s', 
+                fontFamily: 'Plus Jakarta Sans, sans-serif' 
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #d1fae5, #e8f5e2)';
+                e.currentTarget.style.borderColor = '#166534';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #e8f5e2, #f0fdf4)';
+                e.currentTarget.style.borderColor = '#226b2a';
+              }}
+            >
+              <span style={{ fontSize: '1.1rem' }}>🏪</span>
+              Owner Demo Access
+              <span style={{ fontSize: '0.7rem', background: '#226b2a20', padding: '0.2rem 0.5rem', borderRadius: '9999px', marginLeft: '0.25rem' }}>
+                lydia_shop/owner123
+              </span>
+            </button>
+
             {/* Quick Demo Login Button */}
             <button
               type="button"
@@ -283,7 +347,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
               }}
             >
               <span style={{ fontSize: '1.1rem' }}>🚀</span>
-              Quick Demo Access
+              Customer Demo Access
               <span style={{ fontSize: '0.7rem', background: '#f59e0b20', padding: '0.2rem 0.5rem', borderRadius: '9999px', marginLeft: '0.25rem' }}>
                 test/demo123
               </span>
@@ -344,7 +408,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                     value={username} 
                     onChange={e => setUsername(e.target.value)} 
                     required 
-                    placeholder="Enter your username (e.g., test)"
+                    placeholder="Enter your username (e.g., test or lydia_shop)"
                     onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
                     onBlur={e => e.currentTarget.style.borderColor = '#dde8d5'}
                   />
@@ -357,7 +421,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                     value={password} 
                     onChange={e => setPassword(e.target.value)} 
                     required 
-                    placeholder="Enter your password (e.g., demo123)"
+                    placeholder="Enter your password (e.g., demo123 or owner123)"
                     onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
                     onBlur={e => e.currentTarget.style.borderColor = '#dde8d5'}
                   />
@@ -388,6 +452,7 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                       { label: 'Email Address', value: email, setter: setEmail, type: 'email', placeholder: 'your@email.com' },
                       { label: 'Username', value: username, setter: setUsername, type: 'text', placeholder: 'Choose a username' },
                       { label: 'Password', value: password, setter: setPassword, type: 'password', placeholder: 'Create a password' },
+                      { label: 'Address', value: address, setter: setAddress, type: 'text', placeholder: 'Your home address' },
                     ].map(field => (
                       <div key={field.label}>
                         <label style={labelStyle}>{field.label}</label>
@@ -508,32 +573,60 @@ export function Login({ onLogin, users, owners, onShowShopRegistration }: LoginP
                   textAlign: 'left'
                 }}>
                   <div style={{ fontWeight: 700, color: '#226b2a', marginBottom: '0.5rem' }}>🔐 Demo Credentials:</div>
+                  
+                  <div style={{ fontWeight: 600, color: '#226b2a', marginTop: '0.5rem', marginBottom: '0.25rem' }}>👤 Customer Access:</div>
                   <div style={{ color: '#1e2a1c', marginBottom: '0.25rem' }}>
                     <strong>Username:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>test</span>
                   </div>
                   <div style={{ color: '#1e2a1c', marginBottom: '0.5rem' }}>
                     <strong>Password:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>demo123</span>
                   </div>
+                  
+                  <div style={{ fontWeight: 600, color: '#226b2a', marginTop: '0.5rem', marginBottom: '0.25rem' }}>🏪 Owner Access:</div>
+                  <div style={{ color: '#1e2a1c', marginBottom: '0.25rem' }}>
+                    <strong>Username:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>lydia_shop</span>
+                  </div>
+                  <div style={{ color: '#1e2a1c', marginBottom: '0.5rem' }}>
+                    <strong>Password:</strong> <span style={{ fontFamily: 'monospace', background: '#e8f5e2', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>owner123</span>
+                  </div>
+                  
                   <div style={{ color: '#5a6b50', fontSize: '0.7rem', marginTop: '0.5rem' }}>
                     💡 Tip: Use these credentials to test the app
                   </div>
-                  <button
-                    onClick={handleDemoLogin}
-                    style={{
-                      marginTop: '0.5rem',
-                      width: '100%',
-                      padding: '0.4rem',
-                      background: '#226b2a',
-                      border: 'none',
-                      borderRadius: '0.4rem',
-                      color: 'white',
-                      fontSize: '0.7rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Login as Demo User
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    <button
+                      onClick={handleDemoLogin}
+                      style={{
+                        flex: 1,
+                        padding: '0.4rem',
+                        background: '#f59e0b',
+                        border: 'none',
+                        borderRadius: '0.4rem',
+                        color: 'white',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Login as Customer
+                    </button>
+                    <button
+                      onClick={handleOwnerDemoLogin}
+                      style={{
+                        flex: 1,
+                        padding: '0.4rem',
+                        background: '#226b2a',
+                        border: 'none',
+                        borderRadius: '0.4rem',
+                        color: 'white',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Login as Owner
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

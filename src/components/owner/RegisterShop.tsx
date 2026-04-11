@@ -110,236 +110,508 @@ export function RegisterShop({ owner, onShopRegistered }: RegisterShopProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl mb-6">🛪 Register New Spaza Shop</h2>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Header Card */}
+      <div style={{ 
+        padding: '1.5rem', 
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '2rem' }}>🛪</span>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#0d1f0e' }}>
+            Register New Spaza Shop
+          </h2>
+        </div>
+        <p style={{ fontSize: '0.85rem', color: '#5a6b50', margin: 0 }}>
+          Register your shop with SA Home Affairs verification
+        </p>
+      </div>
+
+      {/* Step Indicator */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: '1rem',
+        marginBottom: '0.5rem'
+      }}>
+        {['info', 'verify', 'complete'].map((s, idx) => (
+          <React.Fragment key={s}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.25rem'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: step === s ? '#226b2a' : (step === 'complete' && s === 'info' || step === 'complete' && s === 'verify' ? '#226b2a' : '#e5e7eb'),
+                color: step === s ? 'white' : '#5a6b50',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: '0.8rem'
+              }}>
+                {idx + 1}
+              </div>
+              <span style={{ fontSize: '0.6rem', color: step === s ? '#226b2a' : '#5a6b50', textTransform: 'capitalize' }}>
+                {s}
+              </span>
+            </div>
+            {idx < 2 && (
+              <div style={{
+                width: '40px',
+                height: '2px',
+                background: step === 'complete' ? '#226b2a' : '#e5e7eb'
+              }} />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
 
       {step === 'info' && (
-        <form onSubmit={handleRegisterShop} className="space-y-4">
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-800">
-              🛏️ Your shop will be registered with SA Home Affairs verification
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-              Owner: {owner.fullName} (ID: {owner.idNumber})
-            </p>
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>📝</span> Shop Information
+            </h3>
           </div>
+          <div style={{ padding: '1.25rem' }}>
+            <form onSubmit={handleRegisterShop}>
+              {error && (
+                <div style={{
+                  marginBottom: '1rem',
+                  padding: '0.75rem',
+                  background: '#fee2e2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '0.75rem',
+                  color: '#dc2626',
+                  fontSize: '0.8rem'
+                }}>
+                  ⚠️ {error}
+                </div>
+              )}
 
-          <div>
-            <label className="block text-sm mb-1 text-gray-700">Shop Name *</label>
-            <input
-              type="text"
-              value={shopName}
-              onChange={(e) => setShopName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="e.g., Mama Thandi's Spaza"
-              required
-            />
-          </div>
+              {/* Owner Info Banner */}
+              <div style={{
+                marginBottom: '1rem',
+                padding: '0.75rem',
+                background: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '0.75rem'
+              }}>
+                <p style={{ fontSize: '0.75rem', color: '#1e40af', marginBottom: '0.25rem' }}>
+                  🛏️ Your shop will be registered with SA Home Affairs verification
+                </p>
+                <p style={{ fontSize: '0.65rem', color: '#3b82f6' }}>
+                  Owner: {owner.fullName} (ID: {owner.idNumber})
+                </p>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm mb-1 text-gray-700">Province *</label>
-              <select
-                value={province}
-                onChange={(e) => setProvince(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                required
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                  Shop Name *
+                </label>
+                <input
+                  type="text"
+                  value={shopName}
+                  onChange={(e) => setShopName(e.target.value)}
+                  placeholder="e.g., Mama Thandi's Spaza"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    border: '1.5px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Province *
+                  </label>
+                  <select
+                    value={province}
+                    onChange={(e) => setProvince(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      background: 'white',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {provinces.map(prov => (
+                      <option key={prov} value={prov}>{prov}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                    Location/Township *
+                  </label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g., Soweto"
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      border: '1.5px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.85rem',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                  Physical Address *
+                </label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="e.g., 123 Main Road"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    border: '1.5px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+27 XX XXX XXXX"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    border: '1.5px solid #e5e7eb',
+                    borderRadius: '0.75rem',
+                    fontSize: '0.85rem',
+                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              {/* Operating Hours Section */}
+              <div style={{
+                marginBottom: '1rem',
+                padding: '1rem',
+                background: '#fef3c7',
+                border: '1px solid #fde68a',
+                borderRadius: '0.75rem'
+              }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 700, color: '#92400e', marginBottom: '0.5rem' }}>
+                  ⚖️ Legal Operating Hours
+                </h3>
+                <p style={{ fontSize: '0.65rem', color: '#92400e', marginBottom: '0.75rem' }}>
+                  South African law prohibits shops from operating until 00:00 (midnight)
+                </p>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.65rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                      Opening Time
+                    </label>
+                    <input
+                      type="time"
+                      value={openingTime}
+                      onChange={(e) => setOpeningTime(e.target.value)}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem 0.75rem',
+                        border: '1.5px solid #e5e7eb',
+                        borderRadius: '0.75rem',
+                        fontSize: '0.8rem',
+                        fontFamily: 'Plus Jakarta Sans, sans-serif',
+                        outline: 'none',
+                        transition: 'all 0.2s'
+                      }}
+                      onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                      onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.65rem', marginBottom: '0.25rem', color: '#5a6b50', fontWeight: 600 }}>
+                      Closing Time
+                    </label>
+                    <input
+                      type="time"
+                      value={closingTime}
+                      onChange={(e) => setClosingTime(e.target.value)}
+                      max="23:59"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem 0.75rem',
+                        border: '1.5px solid #e5e7eb',
+                        borderRadius: '0.75rem',
+                        fontSize: '0.8rem',
+                        fontFamily: 'Plus Jakarta Sans, sans-serif',
+                        outline: 'none',
+                        transition: 'all 0.2s'
+                      }}
+                      onFocus={e => e.currentTarget.style.borderColor = '#226b2a'}
+                      onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                    />
+                    <p style={{ fontSize: '0.6rem', color: '#dc2626', marginTop: '0.25rem' }}>Must close before midnight</p>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={offersCredit}
+                    onChange={(e) => setOffersCredit(e.target.checked)}
+                    style={{ width: '16px', height: '16px', accentColor: '#226b2a' }}
+                  />
+                  <span style={{ fontSize: '0.8rem', color: '#0d1f0e' }}>💳 Offer Credit to Customers</span>
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={disabilityFriendly}
+                    onChange={(e) => setDisabilityFriendly(e.target.checked)}
+                    style={{ width: '16px', height: '16px', accentColor: '#226b2a' }}
+                  />
+                  <span style={{ fontSize: '0.8rem', color: '#0d1f0e' }}>♿ Disability-Friendly Shop</span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: '#226b2a',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#1a5420'}
+                onMouseLeave={e => e.currentTarget.style.background = '#226b2a'}
               >
-                {provinces.map(prov => (
-                  <option key={prov} value={prov}>{prov}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm mb-1 text-gray-700">Location/Township *</label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="e.g., Soweto"
-                required
-              />
-            </div>
+                Continue to Verification
+              </button>
+            </form>
           </div>
-
-          <div>
-            <label className="block text-sm mb-1 text-gray-700">Physical Address *</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="e.g., 123 Main Road"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1 text-gray-700">Phone Number *</label>
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="+27 XX XXX XXXX"
-              required
-            />
-          </div>
-
-          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h3 className="text-sm mb-2 text-yellow-900">⚖️ Legal Operating Hours</h3>
-            <p className="text-xs text-yellow-800 mb-3">
-              South African law prohibits shops from operating until 00:00 (midnight)
-            </p>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs mb-1 text-gray-700">Opening Time</label>
-                <input
-                  type="time"
-                  value={openingTime}
-                  onChange={(e) => setOpeningTime(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs mb-1 text-gray-700">Closing Time</label>
-                <input
-                  type="time"
-                  value={closingTime}
-                  onChange={(e) => setClosingTime(e.target.value)}
-                  max="23:59"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                  required
-                />
-                <p className="text-xs text-red-600 mt-1">Must close before midnight</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={offersCredit}
-                onChange={(e) => setOffersCredit(e.target.checked)}
-                className="w-4 h-4 text-green-600"
-              />
-              <span className="text-sm text-gray-700">💳 Offer Credit to Customers</span>
-            </label>
-
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={disabilityFriendly}
-                onChange={(e) => setDisabilityFriendly(e.target.checked)}
-                className="w-4 h-4 text-green-600"
-              />
-              <span className="text-sm text-gray-700">♿ Disability-Friendly Shop</span>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Continue to Verification
-          </button>
-        </form>
+        </div>
       )}
 
       {step === 'verify' && (
-        <div className="space-y-6">
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-            <h3 className="text-lg mb-4 text-blue-900">📋 Confirm Shop Registration</h3>
-            
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Shop Name:</span>
-                <span>{shopName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Location:</span>
-                <span>{location}, {province}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Address:</span>
-                <span>{address}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Phone:</span>
-                <span>{phoneNumber}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Operating Hours:</span>
-                <span>{openingTime} - {closingTime}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Offers Credit:</span>
-                <span>{offersCredit ? 'Yes' : 'No'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Accessible:</span>
-                <span>{disabilityFriendly ? 'Yes' : 'No'}</span>
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>📋</span> Confirm Shop Registration
+            </h3>
+          </div>
+          <div style={{ padding: '1.25rem' }}>
+            <div style={{
+              marginBottom: '1rem',
+              padding: '1rem',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              borderRadius: '0.75rem'
+            }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem', fontSize: '0.8rem' }}>
+                <div><span style={{ color: '#5a6b50' }}>Shop Name:</span> <strong>{shopName}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Location:</span> <strong>{location}, {province}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Address:</span> <strong>{address}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Phone:</span> <strong>{phoneNumber}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Operating Hours:</span> <strong>{openingTime} - {closingTime}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Offers Credit:</span> <strong>{offersCredit ? 'Yes' : 'No'}</strong></div>
+                <div><span style={{ color: '#5a6b50' }}>Accessible:</span> <strong>{disabilityFriendly ? 'Yes' : 'No'}</strong></div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <p className="text-sm text-yellow-800">
-              ✓ Owner identity verified with Home Affairs<br />
-              ✓ Operating hours comply with SA regulations<br />
-              ✓ Shop will be added to national database
-            </p>
-          </div>
+            <div style={{
+              marginBottom: '1rem',
+              padding: '0.75rem',
+              background: '#fef3c7',
+              border: '1px solid #fde68a',
+              borderRadius: '0.75rem'
+            }}>
+              <p style={{ fontSize: '0.7rem', color: '#92400e', marginBottom: '0.25rem' }}>
+                ✓ Owner identity verified with Home Affairs
+              </p>
+              <p style={{ fontSize: '0.7rem', color: '#92400e', marginBottom: '0.25rem' }}>
+                ✓ Operating hours comply with SA regulations
+              </p>
+              <p style={{ fontSize: '0.7rem', color: '#92400e' }}>
+                ✓ Shop will be added to national database
+              </p>
+            </div>
 
-          <div className="flex gap-4">
-            <button
-              onClick={() => setStep('info')}
-              className="flex-1 bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Back to Edit
-            </button>
-            <button
-              onClick={handleConfirmRegistration}
-              className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
-            >
-              ✅ Confirm & Register
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={() => setStep('info')}
+                style={{
+                  flex: 1,
+                  background: '#f3f4f6',
+                  color: '#5a6b50',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#e5e7eb'}
+                onMouseLeave={e => e.currentTarget.style.background = '#f3f4f6'}
+              >
+                Back to Edit
+              </button>
+              <button
+                onClick={handleConfirmRegistration}
+                style={{
+                  flex: 1,
+                  background: '#226b2a',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#1a5420'}
+                onMouseLeave={e => e.currentTarget.style.background = '#226b2a'}
+              >
+                ✅ Confirm & Register
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {step === 'complete' && (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🎉</div>
-          <h3 className="text-2xl mb-4 text-green-700">Shop Registered Successfully!</h3>
-          <p className="text-gray-600 mb-6">
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb',
+          textAlign: 'center',
+          padding: '2rem'
+        }}>
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: '#226b2a' }}>
+            Shop Registered Successfully!
+          </h3>
+          <p style={{ fontSize: '0.85rem', color: '#5a6b50', marginBottom: '1rem' }}>
             {shopName} has been added to the DevRIFT'S SPAZA SHOP SYSTEM national database
           </p>
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200 inline-block">
-            <p className="text-sm text-green-800">
-              ✓ Verified with Home Affairs<br />
-              ✓ Listed in {province} province<br />
+          <div style={{
+            display: 'inline-block',
+            padding: '1rem',
+            background: '#f0fdf4',
+            border: '1px solid #bbf7d0',
+            borderRadius: '0.75rem',
+            textAlign: 'left'
+          }}>
+            <p style={{ fontSize: '0.7rem', color: '#226b2a', marginBottom: '0.25rem' }}>
+              ✓ Verified with Home Affairs
+            </p>
+            <p style={{ fontSize: '0.7rem', color: '#226b2a', marginBottom: '0.25rem' }}>
+              ✓ Listed in {province} province
+            </p>
+            <p style={{ fontSize: '0.7rem', color: '#226b2a' }}>
               ✓ Available to customers nationwide
             </p>
           </div>
         </div>
       )}
+
+      {/* AI Trust Section */}
+      <div style={{
+        padding: '1rem',
+        background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
+        border: '2px solid #d8b4fe',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '1.5rem' }}>🤖</span>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, color: '#6b21a5' }}>
+            Powered by Government Integration
+          </h3>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.7rem', color: '#5a6b50' }}>
+          <span>✓ SA Home Affairs verification</span>
+          <span>✓ SARS tax compliance check</span>
+          <span>✓ CIPC business registration</span>
+          <span>✓ National spaza shop database</span>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-
-

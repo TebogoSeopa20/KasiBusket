@@ -48,7 +48,72 @@ export function OwnerPortal({ owner, shop, products, drivers, users, combos, ord
 
   return (
     <div style={{ minHeight: '100vh', background: '#f7f9f5', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-      <HuaweiCloudStatusBar />
+      {/* Huawei Cloud Status Bar - Compact Version */}
+      <div style={{ background: '#0a1628', color: '#e0e7ff', padding: '0.5rem 1rem', borderBottom: '1px solid #1e2a4a', fontSize: '0.7rem', fontWeight: 500 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          {/* Cloud icon and region */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <span style={{ fontSize: '0.85rem' }}>☁️</span>
+            <span style={{ fontWeight: 600 }}>Huawei Cloud</span>
+            <span style={{ background: '#10b981', padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.6rem', fontWeight: 700, color: 'white' }}>Operational</span>
+          </div>
+          
+          {/* Region with latency */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(255,255,255,0.08)', padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>
+            <span>🌍</span>
+            <span>af-south-1 (JHB)</span>
+            <span>•</span>
+            <span style={{ color: '#60a5fa' }}>72ms avg</span>
+            <span>•</span>
+            <span>{new Date().toLocaleTimeString()}</span>
+          </div>
+          
+          {/* Scrollable service chips container */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', overflowX: 'auto', flex: 1, scrollbarWidth: 'thin', msOverflowStyle: 'none' }}>
+            {/* Always visible core services */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🗄️</span> <span>OBS Storage</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🤖</span> <span>ModelArts AI</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>👁️</span> <span>Cloud Eye</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>📱</span> <span>SMS Service</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            
+            {/* Additional services that might overflow - shown inline and will scroll */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🚀</span> <span>FunctionGraph</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🗺️</span> <span>Map Service</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🔐</span> <span>IAM</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>📊</span> <span>CES</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>⚡</span> <span>ASM</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '0.2rem 0.5rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span>🗄️</span> <span>EVS</span> <span style={{ color: '#10b981' }}>✓</span>
+            </div>
+            
+            {/* View more button - appears when screen is small or as a hint */}
+            <button 
+              onClick={() => toast.info('All 12 Huawei Cloud services are operational')}
+              style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '9999px', padding: '0.2rem 0.6rem', fontSize: '0.65rem', fontWeight: 500, color: '#a5b4fc', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              +4 more
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Header */}
       <header className="spaza-header" style={{ background: '#226b2a', padding: '1rem 1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
@@ -93,14 +158,40 @@ export function OwnerPortal({ owner, shop, products, drivers, users, combos, ord
               onChange={e => { const l = e.target.value; setLanguage(l); db.updateOwner(owner.username, { preferredLanguage: l }); toast.info(`Language: ${l}`); }}
               style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', borderRadius: '0.6rem', color: 'white', padding: '0.35rem 0.7rem', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Plus Jakarta Sans, sans-serif', outline: 'none' }}
             >
-              {['English','isiZulu','isiXhosa','Afrikaans','Sepedi'].map(l => <option key={l} value={l} style={{ color: '#0d1f0e' }}>{l}</option>)}
+              {['English','isiZulu','isiXhosa','Afrikaans','Sepedi','Sesotho','Setswana','Tshivenda','Xitsonga'].map(l => <option key={l} value={l} style={{ color: '#0d1f0e' }}>{l}</option>)}
             </select>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.15)', borderRadius: '9999px', padding: '0.3rem 0.8rem 0.3rem 0.35rem', border: '1.5px solid rgba(255,255,255,0.2)' }}>
               <div style={{ width: '1.6rem', height: '1.6rem', background: '#f59e0b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.7rem', color: '#1a0e00' }}>{owner.fullName.charAt(0)}</div>
               <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'white' }}>{owner.fullName.split(' ')[0]}</span>
             </div>
-            <button onClick={onLogout} style={{ padding: '0.4rem 0.9rem', background: 'rgba(239,68,68,0.2)', border: '1.5px solid rgba(239,68,68,0.4)', borderRadius: '0.65rem', color: 'white', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              🚪 Logout
+            <button 
+              onClick={onLogout} 
+              style={{ 
+                padding: '0.4rem 0.9rem', 
+                background: 'rgba(239,68,68,0.2)', 
+                border: '1.5px solid rgba(239,68,68,0.4)', 
+                borderRadius: '0.65rem', 
+                color: 'white', 
+                fontSize: '0.78rem', 
+                fontWeight: 600, 
+                cursor: 'pointer', 
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                fontFamily: 'Plus Jakarta Sans, sans-serif'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.4)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.6)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.2)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
+              }}
+            >
+              <span>🚪</span>
+              <span>Logout</span>
             </button>
           </div>
         </div>
@@ -113,10 +204,23 @@ export function OwnerPortal({ owner, shop, products, drivers, users, combos, ord
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`spaza-tab ${activeTab === tab.id ? 'active' : ''}`}
-              style={{ flexShrink: 0 }}
+              style={{ 
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.2rem',
+                background: activeTab === tab.id ? '#226b2a' : 'transparent',
+                color: activeTab === tab.id ? 'white' : '#4a5b3e',
+                border: 'none',
+                borderRadius: '0.5rem',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
             >
-              <span>{tab.icon}</span>
+              <span style={{ fontSize: '1.1rem' }}>{tab.icon}</span>
               <span>{tab.label}</span>
             </button>
           ))}

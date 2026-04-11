@@ -50,7 +50,7 @@ export function AdvancedAnalyticsDashboard({ shopOwner, products }: AdvancedAnal
   const [loading, setLoading] = useState(true);
   const [cloudStatus, setCloudStatus] = useState({ connected: true, region: 'af-south-1' });
 
-  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const COLORS = ['#226b2a', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
   useEffect(() => {
     loadAnalytics();
@@ -103,510 +103,344 @@ export function AdvancedAnalyticsDashboard({ shopOwner, products }: AdvancedAnal
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <Cloud className="h-12 w-12 animate-pulse text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading Huawei Cloud Analytics...</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ 
+          padding: '2rem', 
+          background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+          border: '1px solid #bbf7d0',
+          borderRadius: '1rem',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem', animation: 'pulse 1s ease-in-out infinite' }}>☁️</div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0d1f0e', marginBottom: '0.5rem' }}>
+            Loading Huawei Cloud Analytics...
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#5a6b50' }}>Fetching your business insights</p>
         </div>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Huawei Cloud Status Banner */}
-      <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <CardContent className="py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Cloud className="h-8 w-8 text-blue-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Powered by Huawei Cloud</h3>
-                <p className="text-sm text-gray-600">
-                  Region: {cloudStatus.region} • ModelArts AI • Cloud Eye Analytics • OBS Storage
-                </p>
-              </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Header Card */}
+      <div style={{ 
+        padding: '1.5rem', 
+        background: 'linear-gradient(135deg, #e8f5e2, #f0fdf4)', 
+        border: '1px solid #bbf7d0',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '2rem' }}>📊</span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#0d1f0e' }}>
+                Advanced Analytics Dashboard
+              </h2>
             </div>
-            <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-green-600 animate-pulse" />
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                Connected
-              </Badge>
-              <Button onClick={syncToCloud} size="sm" variant="outline">
-                Sync to CloudTable
-              </Button>
-            </div>
+            <p style={{ fontSize: '0.85rem', color: '#5a6b50', margin: 0 }}>
+              Powered by Huawei Cloud • Real-time insights • AI predictions
+            </p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Key Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">R{salesMetrics?.revenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-green-600" />
-              <span className="text-green-600">+12.5% from last month</span>
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Transactions</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{salesMetrics?.transactions}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-green-600" />
-              <span className="text-green-600">+8.2% from last month</span>
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{customerInsights?.totalCustomers}</div>
-            <p className="text-xs text-muted-foreground">
-              {customerInsights?.newCustomers} new this month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">R{inventoryInsights?.inventoryValue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              Turnover: {inventoryInsights?.stockTurnoverRate}x/month
-            </p>
-          </CardContent>
-        </Card>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ 
+              fontSize: '0.7rem', 
+              background: '#f0fdf4', 
+              color: '#226b2a', 
+              padding: '0.25rem 0.75rem', 
+              borderRadius: '9999px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem'
+            }}>
+              <Activity size={12} /> Connected
+            </span>
+            <button
+              onClick={syncToCloud}
+              style={{
+                background: '#226b2a',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.75rem',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#1a5420'}
+              onMouseLeave={e => e.currentTarget.style.background = '#226b2a'}
+            >
+              Sync to CloudTable
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Detailed Analytics Tabs */}
-      <Tabs defaultValue="sales" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="sales">Sales Analytics</TabsTrigger>
-          <TabsTrigger value="customers">Customer Insights</TabsTrigger>
-          <TabsTrigger value="inventory">Inventory</TabsTrigger>
-          <TabsTrigger value="ai" className="flex items-center gap-1">
-            <Brain className="h-4 w-4" />
-            AI Predictions
-          </TabsTrigger>
-        </TabsList>
+      {/* Key Metrics Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+        {/* Total Revenue */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.7rem', color: '#5a6b50' }}>Total Revenue</span>
+            <ShoppingCart size={16} style={{ color: '#226b2a' }} />
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0d1f0e' }}>
+            R{salesMetrics?.revenue.toLocaleString()}
+          </div>
+          <div style={{ fontSize: '0.65rem', color: '#226b2a', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <TrendingUp size={10} /> +12.5% from last month
+          </div>
+        </div>
 
-        {/* Sales Analytics Tab */}
-        <TabsContent value="sales" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Revenue Trend */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Daily Revenue (Last 30 Days)</CardTitle>
-                <CardDescription>Powered by Huawei Cloud Eye</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={salesMetrics?.dailyRevenue}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+        {/* Transactions */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.7rem', color: '#5a6b50' }}>Transactions</span>
+            <Package size={16} style={{ color: '#226b2a' }} />
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0d1f0e' }}>
+            {salesMetrics?.transactions}
+          </div>
+          <div style={{ fontSize: '0.65rem', color: '#226b2a', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <TrendingUp size={10} /> +8.2% from last month
+          </div>
+        </div>
 
-            {/* Revenue by Category */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Revenue by Category</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={salesMetrics?.revenueByCategory}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={(entry) => `${entry.category} (${entry.percentage}%)`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="revenue"
-                    >
-                      {salesMetrics?.revenueByCategory.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+        {/* Total Customers */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.7rem', color: '#5a6b50' }}>Total Customers</span>
+            <Users size={16} style={{ color: '#226b2a' }} />
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0d1f0e' }}>
+            {customerInsights?.totalCustomers}
+          </div>
+          <div style={{ fontSize: '0.65rem', color: '#5a6b50', marginTop: '0.25rem' }}>
+            {customerInsights?.newCustomers} new this month
+          </div>
+        </div>
+
+        {/* Inventory Value */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.7rem', color: '#5a6b50' }}>Inventory Value</span>
+            <Package size={16} style={{ color: '#226b2a' }} />
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0d1f0e' }}>
+            R{inventoryInsights?.inventoryValue.toLocaleString()}
+          </div>
+          <div style={{ fontSize: '0.65rem', color: '#5a6b50', marginTop: '0.25rem' }}>
+            Turnover: {inventoryInsights?.stockTurnoverRate}x/month
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(4, 1fr)', 
+          gap: '0.5rem',
+          background: '#f9fafb', 
+          borderRadius: '0.75rem', 
+          padding: '0.25rem',
+          marginBottom: '1.5rem'
+        }}>
+          {['sales', 'customers', 'inventory', 'ai'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => {
+                const event = new CustomEvent('tabChange', { detail: tab });
+                window.dispatchEvent(event);
+              }}
+              style={{
+                padding: '0.6rem',
+                borderRadius: '0.5rem',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                background: 'transparent',
+                color: '#5a6b50',
+                border: 'none',
+                textTransform: 'capitalize'
+              }}
+              onMouseEnter={e => { if (e.currentTarget.style.background !== '#226b2a') e.currentTarget.style.background = '#f0fdf4'; }}
+              onMouseLeave={e => { if (e.currentTarget.style.background !== '#226b2a') e.currentTarget.style.background = 'transparent'; }}
+            >
+              {tab === 'sales' && '📈 Sales'}
+              {tab === 'customers' && '👥 Customers'}
+              {tab === 'inventory' && '📦 Inventory'}
+              {tab === 'ai' && '🧠 AI Predictions'}
+            </button>
+          ))}
+        </div>
+
+        {/* Sales Analytics Section */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* Revenue Chart */}
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+              <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0 }}>
+                Daily Revenue (Last 30 Days)
+              </h3>
+              <p style={{ fontSize: '0.7rem', color: '#5a6b50', marginTop: '0.25rem' }}>Powered by Huawei Cloud Eye</p>
+            </div>
+            <div style={{ padding: '1rem', height: '320px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={salesMetrics?.dailyRevenue}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="date" stroke="#5a6b50" fontSize={12} />
+                  <YAxis stroke="#5a6b50" fontSize={12} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '0.75rem', border: '1px solid #e5e7eb' }}
+                    formatter={(value: any) => [`R${value}`, 'Revenue']}
+                  />
+                  <Line type="monotone" dataKey="revenue" stroke="#226b2a" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Revenue by Category */}
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+              <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0 }}>
+                Revenue by Category
+              </h3>
+            </div>
+            <div style={{ padding: '1rem', height: '320px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={salesMetrics?.revenueByCategory}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={(entry) => `${entry.category} (${entry.percentage}%)`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="revenue"
+                  >
+                    {salesMetrics?.revenueByCategory.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '0.75rem', border: '1px solid #e5e7eb' }}
+                    formatter={(value: any) => [`R${value}`, 'Revenue']}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* Top Products */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Selling Products</CardTitle>
-              <CardDescription>Best performers this month</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{ padding: '1rem', borderBottom: '1px solid #f3f4f6', background: '#f0fdf4' }}>
+              <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#226b2a', margin: 0 }}>
+                Top Selling Products
+              </h3>
+              <p style={{ fontSize: '0.7rem', color: '#5a6b50', marginTop: '0.25rem' }}>Best performers this month</p>
+            </div>
+            <div style={{ padding: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {salesMetrics?.topProducts.map((product, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-semibold">
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#f9fafb', borderRadius: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#e8f5e2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#226b2a' }}>
                         {index + 1}
                       </div>
                       <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">{product.category} • {product.unitsSold} units</p>
+                        <div style={{ fontWeight: 600, color: '#0d1f0e' }}>{product.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#5a6b50' }}>{product.category} • {product.unitsSold} units</div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">R{product.revenue.toLocaleString()}</p>
-                    </div>
+                    <div style={{ fontWeight: 700, color: '#226b2a' }}>R{product.revenue.toLocaleString()}</div>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Customer Insights Tab */}
-        <TabsContent value="customers" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Customer Segments */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Customer Segments</CardTitle>
-                <CardDescription>AI-powered segmentation via ModelArts</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {customerInsights?.customerSegments.map((segment, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="font-medium">{segment.segment}</span>
-                        <span className="text-sm text-gray-600">{segment.count} customers</span>
-                      </div>
-                      <Progress 
-                        value={(segment.count / (customerInsights?.totalCustomers || 1)) * 100} 
-                        className="h-2"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Avg. Spending: R{segment.avgSpending.toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Top Customers */}
-            <Card>
-              <CardHeader>
-                <CardTitle>VIP Customers</CardTitle>
-                <CardDescription>Highest lifetime value</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {customerInsights?.topCustomers.map((customer, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Award className="h-5 w-5 text-yellow-600" />
-                        <div>
-                          <p className="font-medium">{customer.name}</p>
-                          <p className="text-sm text-gray-500">{customer.orderCount} orders</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-green-700">R{customer.totalSpent.toLocaleString()}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Customer Metrics */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Customer Metrics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <p className="text-3xl font-bold text-blue-700">{customerInsights?.totalCustomers}</p>
-                  <p className="text-sm text-gray-600 mt-1">Total Customers</p>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <p className="text-3xl font-bold text-green-700">R{customerInsights?.customerLifetimeValue.toFixed(2)}</p>
-                  <p className="text-sm text-gray-600 mt-1">Avg. Lifetime Value</p>
-                </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <p className="text-3xl font-bold text-purple-700">
-                    {customerInsights ? Math.round((customerInsights.returningCustomers / customerInsights.totalCustomers) * 100) : 0}%
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">Retention Rate</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {/* AI Trust Section */}
+      <div style={{
+        padding: '1rem',
+        background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
+        border: '2px solid #d8b4fe',
+        borderRadius: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '1.5rem' }}>🤖</span>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, color: '#6b21a5' }}>
+            Powered by Huawei Cloud AI
+          </h3>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', fontSize: '0.7rem', color: '#5a6b50' }}>
+          <span>📊 ModelArts AI for demand forecasting</span>
+          <span>☁️ Cloud Eye for real-time metrics</span>
+          <span>💾 OBS Storage for data persistence</span>
+          <span>🔗 Blockchain for transaction verification</span>
+        </div>
+      </div>
 
-        {/* Inventory Tab */}
-        <TabsContent value="inventory" className="space-y-4">
-          {/* Alerts */}
-          {(inventoryInsights?.lowStockItems.length || 0) > 0 || (inventoryInsights?.expiringItems.length || 0) > 0 ? (
-            <Card className="border-orange-200 bg-orange-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-orange-800">
-                  <AlertTriangle className="h-5 w-5" />
-                  Inventory Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {(inventoryInsights?.lowStockItems.length || 0) > 0 && (
-                  <p className="text-sm">
-                    ⚠️ <strong>{inventoryInsights?.lowStockItems.length}</strong> items are running low on stock
-                  </p>
-                )}
-                {(inventoryInsights?.expiringItems.length || 0) > 0 && (
-                  <p className="text-sm">
-                    ⏰ <strong>{inventoryInsights?.expiringItems.length}</strong> items expiring within 14 days
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          ) : null}
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Low Stock Items */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Low Stock Items</CardTitle>
-                <CardDescription>Items below minimum stock level</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {inventoryInsights?.lowStockItems.length === 0 ? (
-                  <p className="text-center text-gray-500 py-4">All items well stocked! ✅</p>
-                ) : (
-                  <div className="space-y-3">
-                    {inventoryInsights?.lowStockItems.map((item, index) => (
-                      <div key={index} className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-gray-600">
-                              Current: {item.currentStock} / Min: {item.minStock}
-                            </p>
-                          </div>
-                          <Badge variant="destructive">Restock</Badge>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                          Estimated stockout in {item.daysUntilStockout} days
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Expiring Items */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Expiring Soon</CardTitle>
-                <CardDescription>Items expiring within 14 days</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {inventoryInsights?.expiringItems.length === 0 ? (
-                  <p className="text-center text-gray-500 py-4">No items expiring soon! ✅</p>
-                ) : (
-                  <div className="space-y-3">
-                    {inventoryInsights?.expiringItems.map((item, index) => (
-                      <div key={index} className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-gray-600">
-                              Expires: {new Date(item.expiryDate).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <Badge variant="outline" className="bg-orange-100 text-orange-700">
-                            {item.daysUntilExpiry}d left
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                          {item.stock} units in stock
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* AI Predictions Tab */}
-        <TabsContent value="ai" className="space-y-4">
-          <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <Brain className="h-8 w-8 text-purple-600" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">Powered by Huawei ModelArts</h3>
-                  <p className="text-sm text-gray-600">
-                    Advanced AI predictions for demand forecasting, pricing optimization, and market opportunities
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Demand Forecast */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-600" />
-                  Demand Forecast
-                </CardTitle>
-                <CardDescription>AI-predicted demand for next week</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {predictiveInsights?.demandForecast.map((forecast, index) => (
-                    <div key={index} className="p-3 bg-blue-50 rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="font-medium">{forecast.productName}</p>
-                        <Badge variant="outline" className="bg-blue-100">
-                          {Math.round(forecast.confidence * 100)}% confidence
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="text-gray-600">Predicted Demand</p>
-                          <p className="font-semibold text-blue-700">{forecast.predictedDemand} units</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Recommended Order</p>
-                          <p className="font-semibold text-green-700">{forecast.recommendedOrder} units</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Pricing Recommendations */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-yellow-600" />
-                  Dynamic Pricing
-                </CardTitle>
-                <CardDescription>AI-optimized pricing recommendations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {predictiveInsights?.pricingRecommendations.map((rec, index) => (
-                    <div key={index} className="p-3 bg-yellow-50 rounded-lg">
-                      <p className="font-medium mb-2">{rec.productName}</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="text-gray-600">Current Price</p>
-                          <p className="font-semibold">R{rec.currentPrice.toFixed(2)}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Recommended</p>
-                          <p className="font-semibold text-green-700">R{rec.recommendedPrice.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      <div className="mt-2 pt-2 border-t border-yellow-200">
-                        <p className="text-xs text-gray-600">Expected Impact: {rec.expectedImpact}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Trending Products */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
-                Trending Products
-              </CardTitle>
-              <CardDescription>Products gaining popularity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4">
-                {predictiveInsights?.trendingProducts.map((product, index) => (
-                  <div key={index} className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                    <p className="font-semibold mb-1">{product.name}</p>
-                    <p className="text-2xl font-bold text-green-700 mb-1">{product.growthRate}</p>
-                    <Progress value={product.trendScore * 100} className="h-1" />
-                    <p className="text-xs text-gray-600 mt-1">Trend Score: {Math.round(product.trendScore * 100)}%</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Market Opportunities */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Market Opportunities</CardTitle>
-              <CardDescription>AI-identified growth opportunities</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {predictiveInsights?.marketOpportunities.map((opp, index) => (
-                  <div key={index} className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="font-semibold text-gray-900">{opp.category}</p>
-                        <p className="text-sm text-gray-600 mt-1">{opp.opportunity}</p>
-                      </div>
-                      <Badge className="bg-indigo-600">
-                        R{opp.potentialRevenue.toLocaleString()}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.05); }
+        }
+      `}</style>
     </div>
   );
 }
-
-
-
-
